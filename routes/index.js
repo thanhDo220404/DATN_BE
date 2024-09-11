@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController"); // Đảm bảo import này đúng
 
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const result = await productController.getAll();
     return res.status(200).json(result);
