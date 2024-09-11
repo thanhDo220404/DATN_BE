@@ -15,17 +15,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors()); //cho phép các domain khác gọi tới api này
 
 // Connect to MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log("Connected to MongoDB Atlas");
-  } catch (err) {
-    console.error("MongoDB connection error:", err);
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => {
+    console.error("MongoDB connection error: ", err);
     process.exit(1);
-  }
-};
-
-connectDB();
+  });
 
 // Routes
 app.use("/", indexRouter);
