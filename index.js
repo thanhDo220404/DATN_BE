@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/products");
+const usersRouter = require("./routes/users");
 const administrative_units_router = require("./routes/administrative_units");
 
 const app = express();
@@ -27,6 +28,7 @@ mongoose
 // Routes
 app.use("/", indexRouter);
 app.use("/products", productsRouter);
+app.use("/users", usersRouter);
 app.use("/administrative_units", administrative_units_router);
 
 // Error handling middleware
