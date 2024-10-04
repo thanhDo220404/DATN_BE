@@ -112,7 +112,7 @@ async function sendVerificationEmail(email, verificationToken) {
     },
   });
 
-  const verificationLink = `http://localhost:3000/users/verify/${verificationToken}`; // Địa chỉ liên kết xác nhận
+  const verificationLink = `http://localhost:3000/user/verify/${verificationToken}`; // Địa chỉ liên kết xác nhận
 
   const mailOptions = {
     from: "chodenmot@gmail.com",
