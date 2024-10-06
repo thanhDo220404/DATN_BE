@@ -62,7 +62,7 @@ router.post("/login", async (req, res) => {
   try {
     const body = req.body;
     const result = await userController.login(body);
-    return res.status(200).json({ user: result });
+    return res.status(200).json({ User: result });
   } catch (error) {
     console.log("Loi dang nhap", error);
     return res.status(500).json({ mess: error });
