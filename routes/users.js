@@ -103,8 +103,9 @@ router.post("/forgot", async (req, res) => {
         `<h1 style="color: red;">${newPass}</h1>`
       );
       await userController.resetPass(checkMail.userId, newPass);
+      res.status(200).json("Đã gửi mật khẩu mới về Email của bạn");
     } else {
-      return res.status(200).json("co cai nit");
+      return res.status(404).json("Email này không tồn tại");
     }
   } catch (error) {
     console.log("loi sendMail: ", error);
