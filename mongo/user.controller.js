@@ -157,7 +157,13 @@ async function login(body) {
     delete user._doc.pass;
     //tao token
     const token = jwt.sign(
-      { _id: user._id, email: user.email, phone: user.phone, role: user.role },
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+      },
       "trieuhoa", // key secret
       { expiresIn: 1 * 1 * 60 * 60 } // thoi gian het han cua token = 60s
     );
