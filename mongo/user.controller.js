@@ -185,6 +185,7 @@ async function login(body) {
         _id: user._id,
         name: user.name,
         email: user.email,
+        image: user.image,
         phone: user.phone,
         role: user.role,
       },
