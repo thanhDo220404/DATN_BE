@@ -3,6 +3,7 @@ var router = express.Router();
 var userModel = require("../mongo/user.model");
 var userController = require("../mongo/user.controller");
 const jwt = require("jsonwebtoken");
+const upload = require("../helper/upload");
 
 /* GET users listing. */
 //http://localhost:3000/users
@@ -62,17 +63,22 @@ router.post("/login", async (req, res) => {
   try {
     const body = req.body;
     const result = await userController.login(body);
-    return res.status(200).json({ user: result });
+    return res.status(200).json({ User: result });
   } catch (error) {
     console.log("Loi dang nhap", error);
     return res.status(500).json({ mess: error });
   }
 });
 //http://localhost:3000/users/update/:id
-router.post("/update/:id", async (req, res) => {
+router.post("/update/:id", upload.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
+    if (req.file) {
+      body.image = req.file.originalname;
+    } else {
+      delete body.image;
+    }
     const userNew = await userController.updateById(id, body);
     return res.status(200).json({ userNew: userNew });
   } catch (error) {
@@ -103,8 +109,9 @@ router.post("/forgot", async (req, res) => {
         `<h1 style="color: red;">${newPass}</h1>`
       );
       await userController.resetPass(checkMail.userId, newPass);
+      return res.status(200).json("Đã gửi mật khẩu mới về Email của bạn");
     } else {
-      return res.status(200).json("co cai nit");
+      return res.status(404).json("Email này không tồn tại");
     }
   } catch (error) {
     console.log("loi sendMail: ", error);

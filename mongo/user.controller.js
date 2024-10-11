@@ -34,40 +34,64 @@ async function getUserById(id) {
     throw error;
   }
 }
-//cap nhat user theo id
+
+// Cập nhật thông tin người dùng theo ID và trả về token
 async function updateById(id, body) {
   try {
     const user = await userModel.findById(id);
     if (!user) {
       throw new Error("Không tìm thấy người dùng");
     }
-    const { name, email, pass, phone } = body;
-    // Tạo mật khẩu mới chỉ khi mật khẩu được cung cấp
+
+    const { name, email, image, pass, phone } = body;
     let hash;
+
+    // Tạo mật khẩu mới chỉ khi mật khẩu được cung cấp
     if (pass) {
       const salt = bcrypt.genSaltSync(10);
       hash = bcrypt.hashSync(pass, salt);
     }
+
     // Tạo đối tượng chứa thông tin cập nhật
     const updateData = {
       name,
       email,
+      image,
       phone,
     };
+
     // Nếu có mật khẩu mới, thêm vào đối tượng cập nhật
     if (hash) {
       updateData.pass = hash;
     }
+
     // Cập nhật thông tin người dùng
     const result = await userModel.findByIdAndUpdate(id, updateData, {
       new: true,
     });
-    return result;
+
+    // Tạo token JWT
+    const token = jwt.sign(
+      {
+        _id: result._id,
+        name: result.name,
+        email: result.email,
+        image: result.image,
+        phone: result.phone,
+        role: user.role,
+      }, // payload
+      "trieuhoa", // secret key (cần được lưu trữ trong biến môi trường)
+      { expiresIn: "1h" } // thời gian hết hạn của token
+    );
+
+    // Trả về thông tin người dùng đã cập nhật cùng với token
+    return { user: result, token };
   } catch (error) {
     console.log("Lỗi cập nhật:", error);
     throw error;
   }
 }
+
 async function register(body) {
   try {
     const { name, email, pass, phone } = body;
@@ -157,7 +181,14 @@ async function login(body) {
     delete user._doc.pass;
     //tao token
     const token = jwt.sign(
-      { _id: user._id, email: user.email, phone: user.phone, role: user.role },
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        phone: user.phone,
+        role: user.role,
+      },
       "trieuhoa", // key secret
       { expiresIn: 1 * 1 * 60 * 60 } // thoi gian het han cua token = 60s
     );
