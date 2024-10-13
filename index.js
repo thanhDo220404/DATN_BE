@@ -8,6 +8,7 @@ const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/products");
 const usersRouter = require("./routes/users");
 const administrative_units_router = require("./routes/administrative_units");
+const addressRouter = require("./routes/address");
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/", indexRouter);
 app.use("/products", productsRouter);
 app.use("/users", usersRouter);
 app.use("/administrative_units", administrative_units_router);
+app.use("/address", addressRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
