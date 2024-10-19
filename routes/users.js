@@ -3,7 +3,7 @@ var router = express.Router();
 var userModel = require("../mongo/user.model");
 var userController = require("../mongo/user.controller");
 const jwt = require("jsonwebtoken");
-const upload = require("../helper/upload");
+const createUpload = require("../helper/upload");
 
 /* GET users listing. */
 //http://localhost:3000/users
@@ -69,8 +69,9 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ mess: error });
   }
 });
+const upToImg = createUpload("./public/img");
 //http://localhost:3000/users/update/:id
-router.post("/update/:id", upload.single("image"), async (req, res) => {
+router.post("/update/:id", upToImg.single("image"), async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body;
