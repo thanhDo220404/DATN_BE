@@ -9,6 +9,7 @@ const productsRouter = require("./routes/products");
 const usersRouter = require("./routes/users");
 const administrative_units_router = require("./routes/administrative_units");
 const addressRouter = require("./routes/address");
+const mediaRouter = require("./routes/media");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/products", productsRouter);
 app.use("/users", usersRouter);
 app.use("/administrative_units", administrative_units_router);
 app.use("/address", addressRouter);
+app.use("/media", mediaRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
