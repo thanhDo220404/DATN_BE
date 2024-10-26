@@ -108,14 +108,17 @@ async function updateById(id, body) {
     // Tìm địa chỉ theo ID
     const addressById = await addressModel.findById(id);
     if (!addressById) {
-      throw new Error("Không tìm thấy sản phẩm");
+      return null; // Không tìm thấy địa chỉ
     }
 
     const { name, phone, userId, address, specific_address, is_default } = body;
 
-    // Nếu địa chỉ được đặt làm mặc định, cập nhật tất cả các địa chỉ khác thành không mặc định
-    if (is_default) {
-      // Cập nhật tất cả các địa chỉ khác của người dùng thành không mặc định
+    // Nếu địa chỉ hiện tại là mặc định và yêu cầu cập nhật is_default thành false
+    if (addressById.is_default && !is_default) {
+      // Không cập nhật is_default
+      body.is_default = true; // Giữ nguyên is_default thành true
+    } else if (is_default) {
+      // Nếu địa chỉ được đặt làm mặc định, cập nhật tất cả các địa chỉ khác thành không mặc định
       await addressModel.updateMany(
         { userId: userId, _id: { $ne: id } }, // Tìm tất cả địa chỉ của người dùng ngoại trừ địa chỉ hiện tại
         { is_default: false }
@@ -125,13 +128,21 @@ async function updateById(id, body) {
     // Cập nhật địa chỉ hiện tại
     const result = await addressModel.findByIdAndUpdate(
       id,
-      { name, phone, userId, address, specific_address, is_default },
+      {
+        name,
+        phone,
+        userId,
+        address,
+        specific_address,
+        is_default: body.is_default,
+      },
       { new: true } // Trả về bản cập nhật mới
     );
 
     return result; // Trả về địa chỉ đã được cập nhật
   } catch (error) {
     console.log("Lỗi update", error);
-    throw error; // Ném lỗi để xử lý tiếp
+    // Không ném lỗi, chỉ log để theo dõi
+    return null; // Trả về null nếu có lỗi
   }
 }

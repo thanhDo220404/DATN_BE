@@ -37,7 +37,7 @@ const storage = (destinationPath) =>
 
 // Kiểm tra định dạng file
 const checkFileType = (req, file, cb) => {
-  const filetypes = /jpg|jpeg|png|gif|webp/; // Các định dạng file hợp lệ
+  const filetypes = /jpg|jpeg|png|gif|webp|avif/; // Các định dạng file hợp lệ
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
 
