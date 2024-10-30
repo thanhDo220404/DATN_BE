@@ -9,8 +9,6 @@ const UserSchema = new Schema({
   phone: { type: String, required: true },
   image: { type: String, default: "profile-pic-default.png" },
   role: { type: Number, default: 0 },
-  isVerified: { type: Boolean, default: false }, // Trạng thái xác nhận
-  verificationToken: { type: String }, // Mã xác nhận
 });
 
 module.exports = mongoose.models.user || mongoose.model("user", UserSchema);

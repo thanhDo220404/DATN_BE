@@ -12,6 +12,8 @@ module.exports = {
   getProductById,
   deleteProductById,
   updateProductById,
+  searchProducts,
+  increaseViewCount,
 };
 
 async function insert(body) {

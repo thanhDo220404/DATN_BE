@@ -13,6 +13,7 @@ const mediaRouter = require("./routes/media");
 const colorRouter = require("./routes/color");
 const sizeRouter = require("./routes/size");
 const categoriesRouter = require("./routes/categories");
+const cartsRouter = require("./routes/cart");
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use("/media", mediaRouter);
 app.use("/colors", colorRouter);
 app.use("/sizes", sizeRouter);
 app.use("/categories", categoriesRouter);
+app.use("/carts", cartsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

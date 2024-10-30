@@ -132,15 +132,25 @@ router.delete("/:id", async (req, res) => {
 //   }
 // });
 
-// //http://localhost:3000/products/search/:keyword
-// router.get("/search/:keyword", async (req, res) => {
-//   try {
-//     const { keyword } = req.params;
-//     const result = await productController.searchProducts(keyword);
-//     return res.status(200).json({ Products: result });
-//   } catch (error) {
-//     console.log("Loi lay danh sach san pham: ", error);
-//     return res.status(500).json({ mess: error });
-//   }
-// });
+//http://localhost:3000/products/search/:keyword
+router.get("/search/:keyword", async (req, res) => {
+  try {
+    const { keyword } = req.params;
+    const result = await productController.searchProducts(keyword);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log("Loi lay danh sach san pham: ", error);
+    return res.status(500).json({ mess: error });
+  }
+});
+router.get("/increaseview/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await productController.increaseViewCount(id);
+    return res.status(200).json(result);
+  } catch (error) {
+    console.log("Loi lay danh sach san pham: ", error);
+    return res.status(500).json({ mess: error });
+  }
+});
 module.exports = router;

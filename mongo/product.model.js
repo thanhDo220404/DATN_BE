@@ -63,6 +63,10 @@ const ProductSchema = new Schema({
       ],
     },
   ],
+  view: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now, // Ngày tạo, mặc định là ngày hiện tại

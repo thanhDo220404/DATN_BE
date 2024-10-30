@@ -5,7 +5,6 @@ const nodemailer = require("nodemailer");
 module.exports = {
   getAll,
   register,
-  sendVerificationEmail,
   updateById,
   removeById,
   login,
@@ -14,6 +13,7 @@ module.exports = {
   sendForgotPasswordEmail,
   resetPass,
   generateRandomNumberString,
+  addToCart,
 };
 
 async function getAll() {
@@ -103,56 +103,50 @@ async function register(body) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(pass, salt);
 
-    // Tạo mã xác nhận ngẫu nhiên
-    const verificationToken = jwt.sign({ email }, "secretKey", {
-      expiresIn: "1h",
-    }); // Chỉnh sửa secretKey theo nhu cầu của bạn
-
     //Tao user moi
     const user = new userModel({
       name,
       email,
       pass: hash,
       phone,
-      verificationToken,
     });
     //luu db
     const result = await user.save();
 
-    // Gửi email xác nhận
-    await sendVerificationEmail(email, verificationToken);
+    // // Gửi email xác nhận
+    // await sendVerificationEmail(email, verificationToken);
 
     return result;
   } catch (error) {}
 }
-async function sendVerificationEmail(email, verificationToken) {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "chodenmot@gmail.com", // Tài khoản SMTP của bạn
-      pass: "ntzvyougnhjizjbh", // Mật khẩu SMTP của bạn
-    },
-  });
+// async function sendVerificationEmail(email, verificationToken) {
+//   const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 587,
+//     secure: false,
+//     auth: {
+//       user: "chodenmot@gmail.com", // Tài khoản SMTP của bạn
+//       pass: "ntzvyougnhjizjbh", // Mật khẩu SMTP của bạn
+//     },
+//   });
 
-  const verificationLink = `http://localhost:3000/user/verify/${verificationToken}`; // Địa chỉ liên kết xác nhận
+//   const verificationLink = `http://localhost:3000/user/verify/${verificationToken}`; // Địa chỉ liên kết xác nhận
 
-  const mailOptions = {
-    from: "chodenmot@gmail.com",
-    to: email, // Địa chỉ email nhận
-    subject: "Xác nhận địa chỉ email",
-    html: `<p>Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấp vào liên kết dưới đây:</p>
-               <a href="${verificationLink}">Xác nhận email</a>`,
-  };
+//   const mailOptions = {
+//     from: "chodenmot@gmail.com",
+//     to: email, // Địa chỉ email nhận
+//     subject: "Xác nhận địa chỉ email",
+//     html: `<p>Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấp vào liên kết dưới đây:</p>
+//                <a href="${verificationLink}">Xác nhận email</a>`,
+//   };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log("Email xác nhận đã được gửi tới:", email);
-  } catch (error) {
-    console.error("Lỗi gửi email xác nhận:", error);
-  }
-}
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     console.log("Email xác nhận đã được gửi tới:", email);
+//   } catch (error) {
+//     console.error("Lỗi gửi email xác nhận:", error);
+//   }
+// }
 async function removeById(id) {
   try {
     //tao dieu kien kiem tra neu co san pham thi khong cho xoa
@@ -272,4 +266,142 @@ function generateRandomNumberString(length) {
     randomNumberString += randomNumber.toString(); // Chuyển số nguyên thành chuỗi và thêm vào chuỗi kết quả
   }
   return randomNumberString;
+}
+
+async function addToCart(userId, productData) {
+  const { _id: productId, name, items, category } = productData;
+
+  try {
+    // Tìm người dùng
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return { status: 404, message: "User not found" }; // Trả về thông báo lỗi nếu không tìm thấy người dùng
+    }
+
+    // Duyệt qua tất cả các item trong body để thêm vào giỏ hàng
+    for (const item of items) {
+      const { color, image, price, discount, variations, _id: itemId } = item;
+
+      // Kiểm tra xem sản phẩm đã có trong giỏ hàng hay chưa
+      const existingCartItemIndex = user.cart.findIndex(
+        (cartItem) => cartItem._id.toString() === productId
+      );
+
+      if (existingCartItemIndex > -1) {
+        // Nếu sản phẩm đã có trong giỏ hàng, kiểm tra item
+        const existingItemIndex = user.cart[
+          existingCartItemIndex
+        ].items.findIndex(
+          (cartItem) => cartItem.color.colorName === color.colorName // Kiểm tra trùng màu
+        );
+
+        if (existingItemIndex > -1) {
+          // Nếu item đã tồn tại, kiểm tra variation
+          const existingVariationIndex = user.cart[existingCartItemIndex].items[
+            existingItemIndex
+          ].variations.findIndex(
+            (variation) =>
+              variation.size.sizeName === variations[0].size.sizeName // Kiểm tra trùng size
+          );
+
+          if (existingVariationIndex > -1) {
+            // Nếu variation đã tồn tại, cập nhật số lượng
+            user.cart[existingCartItemIndex].items[
+              existingItemIndex
+            ].variations[existingVariationIndex].quantity +=
+              variations[0].quantity; // Cập nhật số lượng
+          } else {
+            // Nếu variation mới, thêm vào items
+            user.cart[existingCartItemIndex].items[
+              existingItemIndex
+            ].variations.push({
+              size: {
+                _id: variations[0].size._id,
+                sizeName: variations[0].size.sizeName,
+                sizeValue: variations[0].size.sizeValue,
+              },
+              quantity: variations[0].quantity,
+              _id: variations[0]._id,
+            });
+          }
+        } else {
+          // Nếu item mới, thêm vào giỏ hàng
+          user.cart[existingCartItemIndex].items.push({
+            _id: itemId, // ID của item từ productData
+            color: {
+              _id: color._id,
+              colorName: color.colorName,
+              colorHexCode: color.colorHexCode,
+            },
+            image: {
+              _id: image._id,
+              mediaFilePath: image.mediaFilePath,
+            },
+            price,
+            discount,
+            variations: [
+              {
+                size: {
+                  _id: variations[0].size._id,
+                  sizeName: variations[0].size.sizeName,
+                  sizeValue: variations[0].size.sizeValue,
+                },
+                quantity: variations[0].quantity,
+                _id: variations[0]._id,
+              },
+            ],
+          });
+        }
+      } else {
+        // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
+        user.cart.push({
+          _id: productId,
+          name,
+          category,
+          items: [
+            {
+              _id: itemId, // ID của item từ productData
+              color: {
+                _id: color._id,
+                colorName: color.colorName,
+                colorHexCode: color.colorHexCode,
+              },
+              image: {
+                _id: image._id,
+                mediaFilePath: image.mediaFilePath,
+              },
+              price,
+              discount,
+              variations: [
+                {
+                  size: {
+                    _id: variations[0].size._id,
+                    sizeName: variations[0].size.sizeName,
+                    sizeValue: variations[0].size.sizeValue,
+                  },
+                  quantity: variations[0].quantity,
+                  _id: variations[0]._id,
+                },
+              ],
+            },
+          ],
+        });
+      }
+    }
+
+    // Lưu thay đổi
+    await user.save();
+
+    return {
+      status: 200,
+      message: "Product added to cart successfully",
+      cart: user.cart,
+    };
+  } catch (error) {
+    console.error("Controller error Error adding product to cart:", error);
+    return {
+      status: 500,
+      message: "Internal Server Error",
+    };
+  }
 }
