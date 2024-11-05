@@ -12,7 +12,7 @@ router.get("/", async function (req, res, next) {
     const result = await userController.getAll();
     return res.status(200).json({ Users: result });
   } catch (error) {
-    console.log("Loi lay danh sach danh muc");
+    console.log("Loi lay danh sach nguoi dung");
     return res.status(500).json({ mess: error });
   }
 });

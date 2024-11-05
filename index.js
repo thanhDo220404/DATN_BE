@@ -14,6 +14,9 @@ const colorRouter = require("./routes/color");
 const sizeRouter = require("./routes/size");
 const categoriesRouter = require("./routes/categories");
 const cartsRouter = require("./routes/cart");
+const shippingMethodRouter = require("./routes/shipping_methods");
+const orderStatusRouter = require("./routes/order_status");
+const orderRouter = require("./routes/order");
 
 const app = express();
 
@@ -42,6 +45,9 @@ app.use("/colors", colorRouter);
 app.use("/sizes", sizeRouter);
 app.use("/categories", categoriesRouter);
 app.use("/carts", cartsRouter);
+app.use("/shipping_methods", shippingMethodRouter);
+app.use("/order_status", orderStatusRouter);
+app.use("/orders", orderRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

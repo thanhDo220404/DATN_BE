@@ -145,6 +145,7 @@ async function updateProductById(id, body) {
             }
 
             return {
+              _id: variation._id,
               size: {
                 _id: sizeFind._id,
                 sizeName: sizeFind.name,
@@ -156,6 +157,7 @@ async function updateProductById(id, body) {
         );
 
         return {
+          _id: item._id,
           color: {
             _id: colorFind._id,
             colorName: colorFind.name,

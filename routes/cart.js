@@ -45,6 +45,17 @@ router.put("/:cartId", async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 });
+// 3. Cập nhật giỏ hàng
+router.put("/:cartId/quantity", async (req, res) => {
+  const { cartId } = req.params;
+  const body = req.body;
+  try {
+    const cart = await cartController.updateCartQuantity(cartId, body);
+    res.status(200).json(cart);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // 4. Xóa giỏ hàng
 router.delete("/:cartId", async (req, res) => {

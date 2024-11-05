@@ -34,9 +34,9 @@ const CartSchema = new Schema({
           sizeName: { type: String },
           sizeValue: { type: String },
         },
-        quantity: { type: Number },
       },
     },
+    quantity: { type: Number },
   },
 });
 
