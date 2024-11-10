@@ -14,16 +14,7 @@ router.get("/", async function (req, res, next) {
     return res.status(500).json({ mess: error });
   }
 });
-// Tạo sản phẩm mới
-// http://localhost:2204/products
-router.post("/", async (req, res) => {
-  try {
-    const product = await productController.insert(req.body);
-    res.status(201).json(product); // Trả về sản phẩm vừa tạo
-  } catch (error) {
-    res.status(400).json({ message: error.message }); // Trả về lỗi
-  }
-});
+
 
 //lấy sản phẩm bằng id
 //http://localhost:3000/products/:id
@@ -35,6 +26,16 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.log("Khong tim thay san pham: ", error);
     return res.status(500).json({ mess: error });
+  }
+});
+// Tạo sản phẩm mới
+// http://localhost:2204/products
+router.post("/", async (req, res) => {
+  try {
+    const product = await productController.insert(req.body);
+    res.status(201).json(product); // Trả về sản phẩm vừa tạo
+  } catch (error) {
+    res.status(400).json({ message: error.message }); // Trả về lỗi
   }
 });
 // Cập nhật sản phẩm theo ID
