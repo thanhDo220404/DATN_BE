@@ -25,35 +25,6 @@ router.post("/", async (req, res) => {
   }
 });
 
-//lấy sản phẩm bằng id
-//http://localhost:3000/products/:id
-router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const product = await productController.getProductById(id);
-    return res.status(200).json({ product });
-  } catch (error) {
-    console.log("Khong tim thay san pham: ", error);
-    return res.status(500).json({ mess: error });
-  }
-});
-// Cập nhật sản phẩm theo ID
-router.put("/:id", async (req, res) => {
-  try {
-    const { id } = req.params; // Lấy ID từ tham số
-    const body = req.body;
-    const updatedProduct = await productController.updateProductById(id, body); // Gọi hàm cập nhật sản phẩm
-
-    return res.status(200).json({
-      message: "Sản phẩm đã được cập nhật thành công",
-      product: updatedProduct,
-    });
-  } catch (error) {
-    console.log("Lỗi cập nhật sản phẩm:", error.message);
-    return res.status(500).json({ message: error.message });
-  }
-});
-
 // Xóa sản phẩm theo ID
 router.delete("/:id", async (req, res) => {
   try {
@@ -70,6 +41,35 @@ router.delete("/:id", async (req, res) => {
     return res.status(200).json({ message: "Sản phẩm đã được xóa thành công" });
   } catch (error) {
     console.log("Lỗi xóa sản phẩm:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+}); 
+//lấy sản phẩm bằng id
+//http://localhost:3000/products/:id
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await productController.getProductById(id);
+    return res.status(200).json({ product });
+  } catch (error) {
+    console.log("Khong tim thay san pham: ", error);
+    return res.status(500).json({ mess: error });
+  }
+});
+
+// Cập nhật sản phẩm theo ID
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // Lấy ID từ tham số
+    const body = req.body;
+    const updatedProduct = await productController.updateProductById(id, body); // Gọi hàm cập nhật sản phẩm
+
+    return res.status(200).json({
+      message: "Sản phẩm đã được cập nhật thành công",
+      product: updatedProduct,
+    });
+  } catch (error) {
+    console.log("Lỗi cập nhật sản phẩm:", error.message);
     return res.status(500).json({ message: error.message });
   }
 });
