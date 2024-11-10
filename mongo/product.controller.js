@@ -221,6 +221,26 @@ async function getNewProduct() {
     throw error;
   }
 }
+async function searchProducts(keyword) {
+  try {
+    const regex = new RegExp(keyword, "i");
+
+    const criteria = {
+      $or: [
+        { name: { $regex: regex } }, // Tìm kiếm trong trường name
+        { description: { $regex: regex } }, // Tìm kiếm trong trường description
+        { "category.categoryName": { $regex: regex } }, // Tìm kiếm trong trường categoryName
+      ],
+    };
+
+    const result = await productModel.find(criteria);
+    return result;
+  } catch (error) {
+    console.log("Loi lay danh sach san pham");
+    throw error;
+  }
+}
+
 //lay san pham theo key
 async function getByKey(key, value) {
   try {
@@ -320,24 +340,5 @@ async function paginateProducts(page, perPage) {
   } catch (err) {
     console.error("Lỗi khi lấy sản phẩm:", err);
     throw new Error("Đã xảy ra lỗi khi lấy sản phẩm");
-  }
-}
-async function searchProducts(keyword) {
-  try {
-    const regex = new RegExp(keyword, "i");
-
-    const criteria = {
-      $or: [
-        { name: { $regex: regex } }, // Tìm kiếm trong trường name
-        { description: { $regex: regex } }, // Tìm kiếm trong trường description
-        { "category.categoryName": { $regex: regex } }, // Tìm kiếm trong trường categoryName
-      ],
-    };
-
-    const result = await productModel.find(criteria);
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach san pham");
-    throw error;
   }
 }
