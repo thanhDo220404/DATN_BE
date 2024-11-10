@@ -13,17 +13,6 @@ const CategorySchema = new Schema({
     type: String,
     default: "", // Mô tả danh mục, có thể để trống
   },
-  parent: {
-    type: {
-      categoryId: { type: Schema.Types.ObjectId, required: true }, // ID của danh mục cha
-      categoryName: { type: String, required: true }, // Tên của danh mục cha
-    },
-    default: null, // Mặc định là null nếu không có danh mục cha
-  },
-  status: {
-    type: Boolean,
-    default: true, // Trạng thái mặc định là true (active)
-  },
   createdAt: {
     type: Date,
     default: Date.now, // Ngày tạo, mặc định là ngày hiện tại

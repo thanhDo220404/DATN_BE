@@ -69,7 +69,7 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ mess: error });
   }
 });
-const upToImg = createUpload("./public/img");
+const upToImg = createUpload("./public/img/user");
 //http://localhost:3000/users/update/:id
 router.post("/update/:id", upToImg.single("image"), async (req, res) => {
   try {

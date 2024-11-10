@@ -199,7 +199,6 @@ async function updateProductById(id, body) {
     throw error;
   }
 }
-
 // Xóa sản phẩm theo ID
 async function deleteProductById(id) {
   try {
@@ -215,7 +214,7 @@ async function deleteProductById(id) {
 }
 async function getNewProduct() {
   try {
-    const result = await productModel.find().sort({ createdAt: -1 }).limit(5);
+    const result = await productModel.find().sort({ createdAt: -1 });
     return result;
   } catch (error) {
     console.log("Loi lay danh sach san pham");
@@ -232,53 +231,11 @@ async function getByKey(key, value) {
     throw error;
   }
 }
-//cap nhat san pham theo id
-async function updateById(id, body) {
-  try {
-    const pro = await productModel.findById(id);
-    if (!pro) {
-      throw new Error("khong tim thay san pham");
-    }
-    const { name, price, quantity, image, description, category } = body;
-    let categoryFind = null;
-    if (category) {
-      categoryFind = await categoryModel.findById(category);
-      if (!categoryFind) {
-        throw new Error("khong tim thay danh muc");
-      }
-    }
-    const categoryUpdate = categoryFind
-      ? {
-          categoryId: categoryFind._id,
-          categoryName: categoryFind.name,
-        }
-      : pro.category;
-    const result = await productModel.findByIdAndUpdate(
-      id,
-      { name, price, quantity, image, description, category: categoryUpdate },
-      { new: true }
-    );
-    return result;
-  } catch (error) {
-    console.log("Loi update", error);
-    throw error;
-  }
-}
-async function removeById(id) {
-  try {
-    // Sử dụng phương thức findOneAndDelete để tìm và xóa sản phẩm dựa trên ID
-    const result = await productModel.findOneAndDelete({ _id: id });
-    return result;
-  } catch (error) {
-    console.log("Loi delete", error);
-    throw error;
-  }
-}
 
 async function getProductsByIdCate(idCate, productId = null, limit = null) {
   try {
     // const query = { 'category.categoryId': idCate };
-    const query = { categoryId: idCate };
+    const query = { "cateogory._id": idCate };
 
     // Nếu có productId, thêm điều kiện lọc
     if (productId !== null) {
@@ -345,7 +302,6 @@ async function getProductsByPrice(key, limit) {
     throw error;
   }
 }
-
 async function paginateProducts(page, perPage) {
   try {
     const products = await productModel
