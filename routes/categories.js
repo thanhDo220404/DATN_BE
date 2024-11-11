@@ -28,17 +28,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Tạo danh mục mới
-router.post("/", async (req, res) => {
-  try {
-    const body = req.body;
-    const result = await CategoryController.insertCategory(body);
-    return res.status(201).json(result);
-  } catch (error) {
-    console.log("Lỗi tạo danh mục:", error.message);
-    return res.status(500).json({ message: error.message });
-  }
-});
+
 
 // Cập nhật danh mục theo ID
 router.put("/:id", async (req, res) => {
@@ -54,6 +44,17 @@ router.put("/:id", async (req, res) => {
     return res.status(200).json(result);
   } catch (error) {
     console.log("Lỗi cập nhật danh mục:", error.message);
+    return res.status(500).json({ message: error.message });
+  }
+});
+// Tạo danh mục mới
+router.post("/", async (req, res) => {
+  try {
+    const body = req.body;
+    const result = await CategoryController.insertCategory(body);
+    return res.status(201).json(result);
+  } catch (error) {
+    console.log("Lỗi tạo danh mục:", error.message);
     return res.status(500).json({ message: error.message });
   }
 });
