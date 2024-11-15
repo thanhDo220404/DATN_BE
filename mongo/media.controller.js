@@ -2,6 +2,7 @@ const mediaModel = require("./media.model");
 module.exports = {
   getAll,
   insert,
+  deleteMedia,
 };
 
 async function getAll() {
@@ -40,6 +41,27 @@ async function insert(body) {
     };
   } catch (error) {
     console.error("Lỗi khi chèn media:", error);
+    throw new Error("Lỗi server. Vui lòng thử lại!");
+  }
+}
+// Hàm xóa media từ cơ sở dữ liệu
+async function deleteMedia(mediaId) {
+  try {
+    // Tìm media theo ID
+    const media = await mediaModel.findById(mediaId);
+    if (!media) {
+      throw new Error("Media không tồn tại!");
+    }
+
+    // Xóa tài liệu media khỏi cơ sở dữ liệu
+    const result = await mediaModel.findByIdAndDelete(mediaId);
+
+    return {
+      message: "Media đã được xóa thành công!",
+      media: result,
+    };
+  } catch (error) {
+    console.error("Lỗi khi xóa media:", error);
     throw new Error("Lỗi server. Vui lòng thử lại!");
   }
 }

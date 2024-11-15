@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 const mediaController = require("../mongo/media.controller");
 const createUpload = require("../helper/upload");
+const deleteFile = require("../helper/deleteFile");
 //http://localhost:2204/media
 router.get("/", async function (req, res, next) {
   try {
@@ -41,6 +42,33 @@ router.post("/", uploadToMedia.single("file"), async function (req, res) {
   } catch (error) {
     console.log("Lỗi insert: ", error);
     return res.status(500).json({ mess: "Lỗi trong quá trình lưu media" });
+  }
+});
+router.delete("/:id", async function (req, res) {
+  try {
+    const mediaId = req.params.id; // Lấy ID từ URL params
+
+    // Gọi controller để xóa media theo ID
+    const result = await mediaController.deleteMedia(mediaId);
+
+    const fileName = result.media.fileName;
+    const destinationPath = "./public/img/media"; // Đường dẫn tới thư mục chứa file
+
+    deleteFile(destinationPath, fileName, (err, message) => {
+      if (err) {
+        return res.status(400).json({ mess: err.message });
+      }
+      res.status(200).json({ mess: message });
+    });
+
+    if (result) {
+      return res.status(200).json(result); // Trả về thông báo thành công
+    }
+
+    return res.status(404).json({ mess: "Media không tồn tại!" }); // Nếu không tìm thấy media
+  } catch (error) {
+    console.log("Lỗi khi xóa media:", error);
+    return res.status(500).json({ mess: "Lỗi trong quá trình xóa media" });
   }
 });
 
