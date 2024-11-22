@@ -5,7 +5,14 @@ const Order_Status = require("./order_status.model");
 
 // 1. Tạo một đơn hàng mới
 const createOrder = async (data) => {
-  const { user, products, shipping_method, order_address, order_total } = data;
+  const {
+    user,
+    products,
+    shipping_method,
+    order_address,
+    payment_type,
+    order_total,
+  } = data;
 
   try {
     // Kiểm tra sự tồn tại của người dùng
@@ -59,6 +66,7 @@ const createOrder = async (data) => {
       products,
       shipping_method,
       order_address,
+      payment_type,
       order_total,
       order_status: order_status_find,
     });
@@ -134,7 +142,44 @@ const updateOrderStatus = async (orderId, orderStatusId) => {
     const orderStatusFind = await Order_Status.findById(orderStatusId);
     if (!orderStatusFind) throw new Error("Order status not found.");
 
-    // Cập nhật đơn hàng với trạng thái mới
+    // Nếu trạng thái đơn hàng là "hủy" (ID này là giả sử của trạng thái hủy)
+    if (orderStatusId === "6724f9c943ad843da1d31150") {
+      const order = await Order.findById(orderId);
+      if (!order) throw new Error("Order not found.");
+
+      // Duyệt qua các sản phẩm trong đơn hàng để hoàn lại số lượng
+      for (const product of order.products) {
+        const foundProduct = await Product.findById(product._id);
+        if (!foundProduct) throw new Error(`Product ${product._id} not found.`);
+
+        const item = product.items;
+        const productItem = foundProduct.items.find(
+          (p) => p._id.toString() === item._id.toString()
+        );
+
+        if (!productItem) {
+          throw new Error(
+            `Item with ID ${item._id} not found in product ${foundProduct.name}.`
+          );
+        }
+
+        const sizeVariation = productItem.variations.find(
+          (v) => v._id.toString() === item.variations._id.toString()
+        );
+
+        if (!sizeVariation) {
+          throw new Error(
+            `Size variation with ID ${item.variations._id} not found in item ${foundProduct.name}.`
+          );
+        }
+
+        // Hoàn lại số lượng khi đơn hàng bị hủy
+        sizeVariation.quantity += product.quantity;
+        await foundProduct.save();
+      }
+    }
+
+    // Cập nhật trạng thái đơn hàng mới
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       {

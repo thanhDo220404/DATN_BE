@@ -89,16 +89,9 @@ const OrderSchema = new Schema({
     price: { type: Number },
     description: { type: String },
   },
-  // payment_type: {
-  //   name: { type: String, default: "Thanh toán khi nhận hàng" },
-  // },
   payment_type: {
     type: String,
-    enum: [
-      "Thanh toán khi nhận hàng",
-      "Chuyển khoản ngân hàng",
-      "Thanh toán qua ví điện tử",
-    ],
+    enum: ["Thanh toán khi nhận hàng", "Ví điện tử VNPAY"],
     default: "Thanh toán khi nhận hàng",
     required: true,
   },
