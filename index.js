@@ -12,6 +12,7 @@ const addressRouter = require("./routes/address");
 const mediaRouter = require("./routes/media");
 const colorRouter = require("./routes/color");
 const sizeRouter = require("./routes/size");
+const voucherRoutes = require('./routes/voucher');
 const categoriesRouter = require("./routes/categories");
 const cartsRouter = require("./routes/cart");
 const shippingMethodRouter = require("./routes/shipping_methods");
@@ -48,6 +49,8 @@ app.use("/carts", cartsRouter);
 app.use("/shipping_methods", shippingMethodRouter);
 app.use("/order_status", orderStatusRouter);
 app.use("/orders", orderRouter);
+app.use('/voucher', voucherRoutes);
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -65,3 +68,10 @@ app
     console.error("Server failed to start:", err);
     process.exit(1);
   });
+
+  mongoose.connect('mongodb://localhost:27017/DATN', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
