@@ -1,30 +1,22 @@
-//Kết nối collection categories
+// Kết nối collection categories
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ObjectId = Schema.ObjectId;
 
-const CategorySchema = new Schema({
-  name: {
-    type: String,
-    required: true, // Tên danh mục là bắt buộc
-    unique: true, // Đảm bảo tên danh mục là duy nhất
+const CategorySchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true, // Tên danh mục là bắt buộc
+    },
+    description: {
+      type: String,
+      default: "", // Mô tả danh mục, có thể để trống
+    },
   },
-  description: {
-    type: String,
-    default: "", // Mô tả danh mục, có thể để trống
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now, // Ngày tạo, mặc định là ngày hiện tại
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now, // Ngày cập nhật, mặc định là ngày hiện tại
-  },
-});
-CategorySchema.pre("save", function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
+  {
+    timestamps: true, // Tự động thêm `createdAt` và `updatedAt`
+  }
+);
+
 module.exports =
   mongoose.models.category || mongoose.model("category", CategorySchema);

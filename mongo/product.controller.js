@@ -92,7 +92,6 @@ async function insert(body) {
     throw error;
   }
 }
-
 async function getAll() {
   try {
     const result = await productModel.find();
@@ -199,7 +198,6 @@ async function updateProductById(id, body) {
     throw error;
   }
 }
-// Xóa sản phẩm theo ID
 async function deleteProductById(id) {
   try {
     const result = await productModel.findOneAndDelete({ _id: id });
@@ -209,53 +207,6 @@ async function deleteProductById(id) {
     return result;
   } catch (error) {
     console.log("Lỗi xóa sản phẩm:", error);
-    throw error;
-  }
-}
-async function getNewProduct() {
-  try {
-    const result = await productModel.find().sort({ createdAt: -1 });
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach san pham");
-    throw error;
-  }
-}
-//lay san pham theo key
-async function getByKey(key, value) {
-  try {
-    const result = await productModel.findOne({ [key]: value });
-    return result;
-  } catch (error) {
-    console.log("loi lay san pham theo key: ", error);
-    throw error;
-  }
-}
-
-async function getProductsByIdCate(idCate, productId = null, limit = null) {
-  try {
-    // const query = { 'category.categoryId': idCate };
-    const query = { "cateogory._id": idCate };
-
-    // Nếu có productId, thêm điều kiện lọc
-    if (productId !== null) {
-      query["_id"] = { $ne: productId };
-    }
-
-    let findQuery = productModel.find(query);
-
-    // Nếu có giới hạn, áp dụng giới hạn
-    if (limit !== null) {
-      findQuery = findQuery.limit(limit);
-    }
-
-    // Sắp xếp theo createDate tăng dần
-    findQuery = findQuery.sort({ createAt: 1 });
-
-    const result = await findQuery.exec();
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach san pham");
     throw error;
   }
 }
@@ -279,47 +230,6 @@ async function increaseViewCount(id) {
       success: false,
       message: "Đã xảy ra lỗi khi tăng số lượt xem của sản phẩm",
     };
-  }
-}
-async function getProductsByView(key, limit) {
-  try {
-    const result = await productModel.find({}).sort({ view: key }).limit(limit);
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach san pham");
-    throw error;
-  }
-}
-async function getProductsByPrice(key, limit) {
-  try {
-    const result = await productModel
-      .find({})
-      .sort({ price: key })
-      .limit(limit);
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach san pham");
-    throw error;
-  }
-}
-async function paginateProducts(page, perPage) {
-  try {
-    const products = await productModel
-      .find()
-      .skip(perPage * page - perPage)
-      .limit(perPage);
-    const count = await productModel.countDocuments();
-
-    const totalPages = Math.ceil(count / perPage);
-
-    return {
-      Products: products,
-      currentPage: page,
-      totalPages: totalPages,
-    };
-  } catch (err) {
-    console.error("Lỗi khi lấy sản phẩm:", err);
-    throw new Error("Đã xảy ra lỗi khi lấy sản phẩm");
   }
 }
 async function searchProducts(keyword) {
