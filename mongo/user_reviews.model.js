@@ -10,14 +10,14 @@ const UserReviewsSchema = new Schema(
     user: {
       _id: { type: ObjectId },
     },
-    products: {
+    product: {
       _id: { type: ObjectId },
+      name: { type: String },
       items: {
         _id: { type: ObjectId },
         color: {
           _id: { type: ObjectId },
           colorName: { type: String },
-          colorHexCode: { type: String },
         },
         image: {
           _id: { type: ObjectId },
@@ -28,12 +28,11 @@ const UserReviewsSchema = new Schema(
           size: {
             _id: { type: ObjectId },
             sizeName: { type: String },
-            sizeValue: { type: String },
           },
         },
       },
     },
-    rating_value: {
+    rating: {
       type: Number,
       default: 0,
       min: 0,
