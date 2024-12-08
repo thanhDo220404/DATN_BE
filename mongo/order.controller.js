@@ -150,7 +150,7 @@ const updateOrderStatus = async (orderId, orderStatusId) => {
     const orderStatusFind = await Order_Status.findById(orderStatusId);
     if (!orderStatusFind) throw new Error("Order status not found.");
 
-    // Nếu trạng thái đơn hàng là "hủy" (ID này là giả sử của trạng thái hủy)
+    // Nếu trạng thái đơn hàng là "hủy"
     if (orderStatusId === "6724f9c943ad843da1d31150") {
       const order = await Order.findById(orderId);
       if (!order) throw new Error("Order not found.");
