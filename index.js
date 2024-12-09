@@ -6,7 +6,18 @@ const cors = require("cors");
 
 const indexRouter = require("./routes/index");
 const productsRouter = require("./routes/products");
+const usersRouter = require("./routes/users");
 const administrative_units_router = require("./routes/administrative_units");
+const addressRouter = require("./routes/address");
+const mediaRouter = require("./routes/media");
+const colorRouter = require("./routes/color");
+const sizeRouter = require("./routes/size");
+const categoriesRouter = require("./routes/categories");
+const cartsRouter = require("./routes/cart");
+const shippingMethodRouter = require("./routes/shipping_methods");
+const orderStatusRouter = require("./routes/order_status");
+const orderRouter = require("./routes/order");
+const userReviewsRouter = require("./routes/user_reviews");
 
 const app = express();
 
@@ -27,7 +38,18 @@ mongoose
 // Routes
 app.use("/", indexRouter);
 app.use("/products", productsRouter);
+app.use("/users", usersRouter);
 app.use("/administrative_units", administrative_units_router);
+app.use("/address", addressRouter);
+app.use("/media", mediaRouter);
+app.use("/colors", colorRouter);
+app.use("/sizes", sizeRouter);
+app.use("/categories", categoriesRouter);
+app.use("/carts", cartsRouter);
+app.use("/shipping_methods", shippingMethodRouter);
+app.use("/order_status", orderStatusRouter);
+app.use("/orders", orderRouter);
+app.use("/user_reviews", userReviewsRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -36,7 +58,7 @@ app.use((err, req, res, next) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 2204;
 app
   .listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

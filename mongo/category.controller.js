@@ -1,72 +1,90 @@
-//thực hiện thao tác CRUD với mongoBD
-const mongoose = require("mongoose");
-const productModel = require("./product.model");
-const categoryModel = require("./category.model");
+const CategoryModel = require("./category.model"); // Đường dẫn đến mô hình Category
 
-module.exports = { insert, getAll, updateById, getCategoryById, removeById };
-
-async function insert(body) {
+const insertCategory = async (categoryData) => {
   try {
-    const { name, description } = body;
-    const cateNew = new categoryModel({
+    const { name, description } = categoryData;
+
+    // Tạo một danh mục mới
+    const newCategory = new CategoryModel({
       name,
       description,
     });
-    //luu vao database
-    const result = await cateNew.save();
-    return result;
+
+    // Lưu vào database
+    const result = await newCategory.save();
+    return result; // Trả về danh mục vừa tạo
   } catch (error) {
-    console.log("Loi insert: ", error);
+    console.error("Lỗi khi tạo danh mục:", error);
     throw error;
   }
-}
-
-async function getAll() {
+};
+const updateCategoryById = async (id, categoryData) => {
   try {
-    const result = await categoryModel.find();
-    return result;
-  } catch (error) {
-    console.log("Loi lay danh sach danh mục");
-    throw error;
-  }
-}
+    const { name, description } = categoryData;
 
-async function getCategoryById(id) {
-  try {
-    const result = await categoryModel.findById(id);
-    return result;
-  } catch (error) {
-    console.log("Lỗi lấy danh mục theo id:", error.message);
-    throw error;
-  }
-}
-
-//cap nhat san pham theo id
-async function updateById(id, body) {
-  try {
-    const cate = await categoryModel.findById(id);
-    if (!cate) {
-      throw new Error("khong tim thay san pham");
-    }
-    const { name, description } = body;
-    const result = categoryModel.findByIdAndUpdate(
+    const updatedCategory = await CategoryModel.findByIdAndUpdate(
       id,
-      { name, description },
-      { new: true }
+      { name, description }, // Đối tượng chứa các trường cần cập nhật
+      {
+        new: true,
+      }
     );
-    return result;
+
+    if (!updatedCategory) {
+      throw new Error("Danh mục không tồn tại");
+    }
+
+    return updatedCategory; // Trả về danh mục đã cập nhật
   } catch (error) {
-    console.log("Loi update", error);
+    console.error("Lỗi khi cập nhật danh mục:", error);
     throw error;
   }
-}
-async function removeById(id) {
+};
+// Lấy tất cả danh mục
+const getAllCategories = async () => {
   try {
-    // Sử dụng phương thức findOneAndDelete để tìm và xóa sản phẩm dựa trên ID
-    const result = await categoryModel.findOneAndDelete({ _id: id });
-    return result;
+    const categories = await CategoryModel.find();
+    return categories; // Trả về danh sách danh mục
   } catch (error) {
-    console.log("Loi delete", error);
+    console.error("Lỗi khi lấy tất cả danh mục:", error);
     throw error;
   }
-}
+};
+
+// Lấy danh mục theo ID
+const getCategoryById = async (id) => {
+  try {
+    const category = await CategoryModel.findById(id);
+    if (!category) {
+      throw new Error("Danh mục không tồn tại");
+    }
+    return category; // Trả về danh mục theo ID
+  } catch (error) {
+    console.error("Lỗi khi lấy danh mục theo ID:", error);
+    throw error;
+  }
+};
+
+// Xóa danh mục
+const deleteCategoryById = async (id) => {
+  try {
+    // Tìm và xóa danh mục theo ID
+    const deletedCategory = await CategoryModel.findByIdAndDelete(id);
+    if (!deletedCategory) {
+      throw new Error("Danh mục không tồn tại");
+    }
+
+    return deletedCategory; // Trả về danh mục đã xóa
+  } catch (error) {
+    console.error("Lỗi khi xóa danh mục:", error);
+    throw error;
+  }
+};
+
+module.exports = {
+  insertCategory,
+  getAllCategories,
+  getCategoryById,
+  updateCategoryById,
+  deleteCategoryById,
+};

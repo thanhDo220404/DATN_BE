@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const administrative_units_controller = require("../mongo/administrative_units.controller");
-
+//http://localhost:2204/administrative_units
 router.get("/", async function (req, res, next) {
   try {
     const result = await administrative_units_controller.getAll();
