@@ -56,9 +56,15 @@ const createOrder = async (data) => {
       }
     }
 
-    const order_status_find = await Order_Status.findById(
+    let order_status_find = await Order_Status.findById(
       "6724f9c943ad843da1d3114c"
     );
+
+    if (payment_type === "Ví điện tử VNPAY") {
+      order_status_find = await Order_Status.findById(
+        "673f4eb7e8698e7b4115b84c"
+      );
+    }
 
     // Tạo đơn hàng mới
     const order = new Order({
@@ -124,6 +130,7 @@ const deleteOrder = async (orderId) => {
     throw new Error("Error deleting order: " + error.message);
   }
 };
+
 // 6. Lấy tất cả đơn hàng theo userId
 const getOrdersByUserId = async (userId) => {
   try {
@@ -135,6 +142,7 @@ const getOrdersByUserId = async (userId) => {
     throw new Error("Error fetching orders by user ID: " + error.message);
   }
 };
+
 // 7. Cập nhật trạng thái đơn hàng
 const updateOrderStatus = async (orderId, orderStatusId) => {
   try {
@@ -142,7 +150,7 @@ const updateOrderStatus = async (orderId, orderStatusId) => {
     const orderStatusFind = await Order_Status.findById(orderStatusId);
     if (!orderStatusFind) throw new Error("Order status not found.");
 
-    // Nếu trạng thái đơn hàng là "hủy" (ID này là giả sử của trạng thái hủy)
+    // Nếu trạng thái đơn hàng là "hủy"
     if (orderStatusId === "6724f9c943ad843da1d31150") {
       const order = await Order.findById(orderId);
       if (!order) throw new Error("Order not found.");
