@@ -29,7 +29,7 @@ router.post("/", uploadToMedia.single("file"), async function (req, res) {
     const mediaData = {
       ...body, // Dữ liệu từ form
       fileName: fileData.filename, // Tên file sau khi upload
-      filePath: `http://localhost:2204/img/media/${fileData.filename}`, // Đường dẫn file
+      filePath: `http://dreamersfashionstore.xyz:2204/img/media/${fileData.filename}`, // Đường dẫn file
       fileSize: fileData.size, // Kích thước file
       fileType: fileData.mimetype, // Kiểu file
     };
