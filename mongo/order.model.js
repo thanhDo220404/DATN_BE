@@ -99,9 +99,6 @@ const OrderSchema = new Schema(
       type: Number,
       required: true,
     },
-    vnp_TransactionDate: {
-      type: String,
-    },
   },
   { timestamps: true }
 );

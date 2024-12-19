@@ -202,16 +202,6 @@ const updateOrderStatus = async (orderId, orderStatusId) => {
     throw new Error("Error updating order status: " + error.message);
   }
 };
-const update_vnp_TransactionDate = async (orderId, vnp_TransactionDate) => {
-  // Cập nhật trạng thái đơn hàng mới
-  const updatedOrder = await Order.findByIdAndUpdate(
-    orderId,
-    {
-      vnp_TransactionDate,
-    },
-    { new: true, runValidators: true }
-  );
-};
 
 module.exports = {
   createOrder,
@@ -220,6 +210,5 @@ module.exports = {
   updateOrder,
   deleteOrder,
   getOrdersByUserId,
-  updateOrderStatus,
-  update_vnp_TransactionDate,
+  updateOrderStatus, // Xuất hàm updateOrderStatus ra
 };
