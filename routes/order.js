@@ -14,21 +14,8 @@ const {
   deleteOrder,
   getOrdersByUserId,
   updateOrderStatus,
+  update_vnp_TransactionDate,
 } = require("../mongo/order.controller"); // Đảm bảo đường dẫn đúng
-
-// router.get("/create_payment_url", function (req, res, next) {
-//   res.render("order", { title: "Tạo mới đơn hàng", amount: 10000 });
-// });
-
-// router.get("/querydr", function (req, res, next) {
-//   let desc = "truy van ket qua thanh toan";
-//   res.render("querydr", { title: "Truy vấn kết quả thanh toán" });
-// });
-
-// router.get("/refund", function (req, res, next) {
-//   let desc = "Hoan tien GD thanh toan";
-//   res.render("refund", { title: "Hoàn tiền giao dịch thanh toán" });
-// });
 
 router.post("/create_payment_url", function (req, res, next) {
   process.env.TZ = "Asia/Ho_Chi_Minh";
@@ -128,6 +115,7 @@ router.get("/vnpay_return", async function (req, res, next) {
     const code = vnp_Params["vnp_ResponseCode"];
     if (code === "00") {
       await updateOrderStatus(orderId, "673f4eb7e8698e7b4115b84d");
+      await update_vnp_TransactionDate(orderId, vnp_Params["vnp_PayDate"]);
       res.redirect(`${public_website_url}/user/don-mua`);
     } else {
       await updateOrderStatus(orderId, "673f4eb7e8698e7b4115b84c");
@@ -290,8 +278,10 @@ router.post("/refund", function (req, res, next) {
   let vnp_TxnRef = req.body.orderId;
   let vnp_TransactionDate = req.body.transDate;
   let vnp_Amount = req.body.amount * 100;
-  let vnp_TransactionType = req.body.transType;
-  let vnp_CreateBy = req.body.user;
+  // let vnp_TransactionType = req.body.transType;
+  let vnp_TransactionType = "02";
+  // let vnp_CreateBy = req.body.user;
+  let vnp_CreateBy = "Trần Thu Hằng";
 
   let currCode = "VND";
 
@@ -364,7 +354,12 @@ router.post("/refund", function (req, res, next) {
       body: dataObj,
     },
     function (error, response, body) {
-      console.log(response);
+      if (error) {
+        console.error("Lỗi khi gửi yêu cầu:", error);
+      } else {
+        console.log("Trạng thái phản hồi:", response.statusCode);
+        res.status(200).json({ body: body });
+      }
     }
   );
 });
