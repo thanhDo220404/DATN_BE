@@ -18,6 +18,8 @@ const shippingMethodRouter = require("./routes/shipping_methods");
 const orderStatusRouter = require("./routes/order_status");
 const orderRouter = require("./routes/order");
 const userReviewsRouter = require("./routes/user_reviews");
+const postRouter = require("./routes/post");
+const voucherRouter = require("./routes/voucher");
 
 const app = express();
 
@@ -50,6 +52,8 @@ app.use("/shipping_methods", shippingMethodRouter);
 app.use("/order_status", orderStatusRouter);
 app.use("/orders", orderRouter);
 app.use("/user_reviews", userReviewsRouter);
+app.use("/posts", postRouter);
+app.use("/vouchers", voucherRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
