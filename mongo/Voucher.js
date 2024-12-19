@@ -10,6 +10,9 @@ const VoucherSchema = new mongoose.Schema({
   expiryDate: { type: Date, required: true },
   minOrderValue: { type: Number, required: true },
   isActive: { type: Boolean, default: true },
+  usageLimit: { type: Number, required: true }, // Thêm giới hạn lượt sử dụng
+  usageCount: { type: Number, default: 0 }, // Thêm lượt sử dụng hiện tại
+  userLimit: { type: Number, required: true }, // Giới hạn lượt sử dụng mỗi người
 });
 
 module.exports = mongoose.model('Voucher', VoucherSchema);
